@@ -545,7 +545,12 @@ seconds = (current_time - start_time) // 1000
             <pre>
 if event.type == pygame.KEYDOWN:
     if event.key == pygame.K_SPACE:
-        bullets.append(bullet_rect.copy())
+		# створюємо копію прямокутника кулі
+		bullet = bullet_rect.copy()
+		
+		# тут вказуємо початкову позицію кулі
+		
+		bullets.append(bullet)
 </pre
             >
           </div>
