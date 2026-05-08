@@ -1,0 +1,329 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: #f4f6f8;
+  color: #222;
+  padding: 40px;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 38px;
+  color: #1e293b;
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  padding: 12px 24px;
+  border: none;
+  background: #dbe2ea;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: 0.3s;
+  font-size: 16px;
+}
+
+.tab-btn:hover {
+  background: #c8d2dc;
+}
+
+.tab-btn.active {
+  background: #1e293b;
+  color: white;
+}
+
+.tab-content {
+  display: none;
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.tab-content.active {
+  display: block;
+}
+
+h2 {
+  margin-bottom: 15px;
+  color: #1e293b;
+}
+
+p {
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+.code {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 18px;
+  border-radius: 12px;
+  overflow: auto;
+  margin-top: 15px;
+}
+
+pre {
+  white-space: pre-wrap;
+}
+
+.note {
+  background: #eef2f7;
+  padding: 12px;
+  border-left: 4px solid #1e293b;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.theory-block {
+  margin-bottom: 40px;
+  padding-bottom: 25px;
+  border-bottom: 1px solid #dbe2ea;
+}
+
+.theory-block h3 {
+  font-size: 28px;
+  margin-bottom: 18px;
+  color: #1e293b;
+}
+
+.theory-block p {
+  margin-bottom: 14px;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+.code {
+  background: #eef2f7;
+  color: #1e293b;
+  padding: 18px;
+  border-radius: 12px;
+  overflow: auto;
+  margin: 18px 0;
+  border: 1px solid #d8dee7;
+}
+
+.code pre {
+  white-space: pre-wrap;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.pygame-quick-nav {
+  display: flex;
+  gap: 12px;
+  margin: 20px 0 30px 0;
+  flex-wrap: wrap;
+}
+
+.quick-btn {
+  padding: 10px 18px;
+  background: #eef2f7;
+  border: 1px solid #dbe2ea;
+  border-radius: 999px;
+  text-decoration: none;
+  color: #1e293b;
+  font-weight: 500;
+  font-size: 15px;
+  transition: 0.25s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.quick-btn:hover {
+  background: #d9dadf;
+  color: white;
+  transform: translateY(-1px);
+}
+
+.scroll-top {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+
+  width: 45px;
+  height: 45px;
+
+  border-radius: 50%;
+  border: none;
+
+  background: #1e293b;
+  color: white;
+
+  font-size: 20px;
+  cursor: pointer;
+
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+
+  display: none; /* спочатку прихована */
+}
+
+.scroll-top:hover {
+  transform: translateY(-3px);
+  background: #0f172a;
+}
+
+#theory .code {
+  background: hsl(198, 93%, 90%);
+  color: #0f172a;
+  padding: 18px;
+  border-radius: 14px;
+  overflow: auto;
+  margin: 18px 0;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid #38bdf8; /* акцент як у сучасних туторіалах */
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+}
+
+/* теорія */
+#theory .theory-block {
+  margin: 30px 0;
+  padding: 20px;
+  border-radius: 16px;
+  background: hsl(145, 25%, 94%); /* дуже м’який зелено-сірий */
+  color: #1f2a24;
+  border: 1px solid hsl(145, 20%, 85%);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+}
+
+#theory .theory-block h3 {
+  margin-bottom: 15px;
+  font-size: 22px;
+  color: hsl(145, 35%, 28%); /* приглушений зелений */
+}
+
+/* кнопки навігації */
+#theory .quick-btn {
+  background: hsl(145, 20%, 88%);
+  color: hsl(145, 35%, 25%);
+  border-radius: 10px;
+  transition: 0.2s ease;
+}
+
+#theory .quick-btn:hover {
+  background: hsl(145, 35%, 45%);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+#theory .theory-block img {
+  display: block;
+  border-radius: 12px;
+  margin-top: 10px;
+  transition: transform 0.2s ease;
+}
+
+#theory .pygame-quick-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/* =========================
+   FLASK TAB — BLUEBERRY STYLE
+   світлий + ягідно-синій
+========================= */
+
+#flask .theory-block-flask {
+  margin: 30px 0;
+  padding: 22px;
+  border-radius: 16px;
+
+  background: #f7f9ff; /* дуже світлий синій */
+  border: 1px solid #dbeafe;
+
+  box-shadow: 0 6px 16px rgba(30, 64, 175, 0.06);
+  color: #1f2937;
+}
+
+#flask .theory-block-flask h3 {
+  margin-bottom: 15px;
+  font-size: 22px;
+  color: #294684; /* синій акцент */
+}
+
+/* =========================
+   CODE (СВІТЛИЙ БЛОК)
+========================= */
+
+#flask .code-flask {
+  background: #eef2ff; /* світлий індиго */
+  color: #1e293b;
+
+  padding: 18px;
+  border-radius: 14px;
+  margin: 15px 0;
+
+  border-left: 4px solid #3b82f6; /* синій акцент */
+  border: 1px solid #dbeafe;
+
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+}
+
+#flask .code-flask pre {
+  white-space: pre-wrap;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* =========================
+   NAVIGATION BUTTONS
+========================= */
+
+.flask-quick-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0 30px 0;
+}
+
+.quick-btn-flask {
+  padding: 10px 16px;
+  border-radius: 999px;
+
+  background: #eef2ff;
+  color: #1d4ed8;
+
+  border: 1px solid #dbeafe;
+
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.2s ease;
+}
+
+.quick-btn-flask:hover {
+  background: #607fc2;
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* =========================
+   LISTS (ХІМІЯ)
+========================= */
+
+#flask ul {
+  padding-left: 20px;
+  margin-top: 10px;
+}
+
+#flask li {
+  margin-bottom: 6px;
+}

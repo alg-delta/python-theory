@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <title>Конспект python</title>
+  </head>
+  <body>
+    <button id="scrollTopBtn" class="scroll-top">↑</button>
+    <div class="container">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="pygame">Pygame</button>
+        <button class="tab-btn" data-tab="theory">Загальна теорія</button>
+        <button class="tab-btn" data-tab="flask">Flask</button>
+      </div>
+
+      <!-- PYGAME -->
+      <div class="tab-content active" id="pygame">
+        <!-- РОЗКЛАД (ШВИДКА НАВІГАЦІЯ) -->
+        <div class="pygame-quick-nav">
+          <a class="quick-btn" href="#rect">Прямокутник</a>
+          <a class="quick-btn" href="#circle">Коло</a>
+          <a class="quick-btn" href="#line">Лінія</a>
+          <a class="quick-btn" href="#img">Зображення</a>
+          <a class="quick-btn" href="#bg">Фон (картинка на фон)</a>
+          <a class="quick-btn" href="#collision">Зіткнення (collision)</a>
+          <a class="quick-btn" href="#text">Текст</a>
+          <a class="quick-btn" href="#key">Клавіатура</a>
+          <a class="quick-btn" href="#move">Рух гравця (клавіатура)</a>
+          <a class="quick-btn" href="#jump">Стрибок через гравітацію</a>
+          <a class="quick-btn" href="#move-enemy">Рух ворога (туди-сюди)</a>
+          <a class="quick-btn" href="#event"
+            >Одноразове натискання клавіші (event)</a
+          >
+          <a class="quick-btn" href="#mouse">Миша</a>
+          <a class="quick-btn" href="#click">Клік по об’єкту</a>
+          <a class="quick-btn" href="#timer">Таймер у грі</a>
+          <a class="quick-btn" href="#shot">Постріл (через клавішу)</a>
+        </div>
+        <!-- ПРЯМОКУТНИК -->
+        <div class="theory-block">
+          <h3 id="rect">Прямокутник</h3>
+          <p>Створення прямокутника:</p>
+          <div class="code">
+            <pre>rect = pygame.Rect(100, 200, 50, 60)</pre>
+          </div>
+          <p>Відмалювання у циклі:</p>
+          <div class="code">
+            <pre>pygame.draw.rect(screen, (255, 0, 0), rect)</pre>
+          </div>
+          <p>
+            <b>100</b> — позиція по X<br />
+            <b>200</b> — позиція по Y<br />
+            <b>50</b> — ширина<br />
+            <b>60</b> — висота
+          </p>
+          <p><b>(255, 0, 0)</b> — червоний колір.</p>
+          <p>
+            Якщо не потрібні колізії, рух або кліки — можна малювати фігуру
+            прямо в циклі:
+          </p>
+          <div class="code">
+            <pre>pygame.draw.rect(screen, (255, 0, 0), (100, 200, 50, 60))</pre>
+          </div>
+        </div>
+        <!-- КОЛО -->
+        <div class="theory-block">
+          <h3 id="circle">Коло</h3>
+          <p>Малювання кола:</p>
+          <div class="code">
+            <pre>pygame.draw.circle(screen, (0, 255, 0), (300, 200), 40)</pre>
+          </div>
+          <p>
+            <b>(0, 255, 0)</b> — зелений колір<br />
+            <b>(300, 200)</b> — центр кола<br />
+            <b>40</b> — радіус
+          </p>
+        </div>
+        <!-- ЛІНІЯ -->
+        <div class="theory-block">
+          <h3 id="line">Лінія</h3>
+          <p>Малювання лінії:</p>
+          <div class="code">
+            <pre>
+pygame.draw.line(screen, (255, 255, 255), (100, 100), (400, 100), 5)</pre
+            >
+          </div>
+          <p>
+            <b>(255, 255, 255)</b> — білий колір<br />
+            <b>(100, 100)</b> — початок лінії<br />
+            <b>(400, 100)</b> — кінець лінії<br />
+            <b>5</b> — товщина
+          </p>
+        </div>
+        <!-- ЗОБРАЖЕННЯ -->
+        <div class="theory-block">
+          <h3 id="img">Зображення</h3>
+
+          <p>Завантаження картинки та створення rect:</p>
+
+          <div class="code">
+            <pre>
+# завантаження картинки
+player_img = pygame.image.load("player.png")
+
+#додактово: щоб змінити розмір зображення
+player_img = pygame.transform.smoothscale(player_img, (200, 150))
+
+# створення rect
+player_rect = player_img.get_rect()
+
+# позиція
+player_rect.x = 100
+player_rect.y = 200
+</pre
+            >
+          </div>
+
+          <div class="theory-block">
+            <p><b>Властивості rect, які можна використовувати:</b></p>
+
+            <ul>
+              <li><b>x, y</b> — позиція об’єкта</li>
+              <li><b>left, right</b> — ліва та права межа</li>
+              <li><b>top, bottom</b> — верх та низ</li>
+              <li><b>width, height</b> — ширина та висота</li>
+              <li><b>center</b> — центр (x, y)</li>
+              <li><b>centerx, centery</b> — координати центру</li>
+              <li><b>topleft</b> — верхній лівий кут</li>
+              <li><b>bottomright</b> — нижній правий кут</li>
+            </ul>
+          </div>
+
+          <p>Відмалювання картинки:</p>
+
+          <div class="code">
+            <pre>
+screen.blit(player_img, player_rect)
+</pre
+            >
+          </div>
+        </div>
+        <!-- ФОН -->
+        <div class="theory-block">
+          <h3 id="bg">Фон (картинка на фон)</h3>
+
+          <p>Завантаження зображення фону:</p>
+
+          <div class="code">
+            <pre>
+background = pygame.image.load("background.png")
+background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+</pre
+            >
+          </div>
+
+          <p>Відмалювання фону у головному циклі гри:</p>
+
+          <div class="code">
+            <pre>
+screen.blit(background, (0, 0))
+</pre
+            >
+          </div>
+
+          <p>
+            <b>"background.png"</b> — файл зображення фону<br />
+            <b>(WIDTH, HEIGHT)</b> — розмір екрана гри<br />
+            <b>(0, 0)</b> — малюємо фон у верхньому лівому куті
+          </p>
+        </div>
+        <!-- ЗІТКНЕННЯ -->
+        <div class="theory-block">
+          <h3 id="collision">Зіткнення (collision)</h3>
+
+          <p>Перевірка зіткнення двох об’єктів:</p>
+
+          <div class="code">
+            <pre>
+if player_rect.colliderect(enemy_rect):
+    print("Зіткнення!")
+</pre
+            >
+          </div>
+        </div>
+
+        <!-- ТЕКСТ -->
+        <div class="theory-block">
+          <h3 id="text">Текст</h3>
+
+          <p>Створення шрифту:</p>
+
+          <div class="code">
+            <pre>
+font = pygame.font.SysFont("arial", 36)
+text = font.render("Привіт", True, (255, 255, 255))
+</pre
+            >
+          </div>
+
+          <p>
+            <b>"arial"</b> — системний шрифт<br />
+            <b>36</b> — розмір тексту
+          </p>
+        </div>
+
+        <!-- СВІЙ ШРИФТ -->
+        <div class="theory-block">
+          <h3>Свій завантажений шрифт</h3>
+
+          <p>
+            Використання свого шрифту (потрібно завантажити в папку проєкту):
+          </p>
+
+          <div class="code">
+            <pre>
+font = pygame.font.Font("myfont.ttf", 36)
+text = font.render("Привіт", True, (255, 255, 255))
+</pre
+            >
+          </div>
+
+          <p>
+            <b>"myfont.ttf"</b> — файл шрифту<br />
+            <b>36</b> — розмір
+          </p>
+
+          <p>Відмалювання шрифту у головному циклі гри:</p>
+
+          <div class="code">
+            <pre>
+screen.blit(text, (10, 10))
+</pre
+            >
+          </div>
+        </div>
+        <!-- КЛАВІАТУРА -->
+
+        <div class="theory-block">
+          <h3 id="key">Клавіатура. Отримання натиснутих клавіш:</h3>
+
+          <div class="code">
+            <pre>
+keys = pygame.key.get_pressed()
+</pre
+            >
+          </div>
+          <p>Для постійних дій, в кожному кадрі гри.</p>
+        </div>
+        <!-- РУХ ГРАВЦЯ -->
+        <div class="theory-block">
+          <h3 id="move">Рух гравця (клавіатура)</h3>
+
+          <p>Рух через <b>стрілки</b>:</p>
+
+          <div class="code">
+            <pre>
+if keys[pygame.K_LEFT]:
+    player_rect.x -= 5
+
+if keys[pygame.K_RIGHT]:
+    player_rect.x += 5
+
+</pre
+            >
+          </div>
+        </div>
+
+        <div class="theory-block">
+          <!-- СТРИБОК -->
+
+          <h3 id="jump">Стрибок через гравітацію</h3>
+          <p><b> Задаємо змінні (поза циклом гри)</b></p>
+
+          <div class="code">
+            <pre>
+gravity = 1 
+jump_speed = -15
+velocity_y = 0
+is_jumping = False
+</pre
+            >
+          </div>
+
+          <p>
+            <b>gravity</b> — сила тяжіння (завжди тягне вниз)<br />
+            <b>jump_speed</b> — сила стрибка (вгору)<br />
+            <b>velocity_y</b> — вертикальна швидкість персонажа<br />
+            <b>is_jumping</b> — перевірка, чи персонаж у стрибку
+          </p>
+
+          <p><b>Основний цикл гри</b></p>
+
+          <div class="code">
+            <pre>
+# перевірка клавіш
+if keys[pygame.K_SPACE] and not is_jumping:
+    velocity_y = jump_speed
+    # заборона подвійного стрибка
+    is_jumping = True 
+
+# гравітація
+velocity_y += gravity
+
+# оновлення позиції
+player_rect.y += velocity_y
+
+# перевірка "землі" (тут 300-позиція "землі")
+if player_rect.y >= 300:
+    player_rect.y = 300    # ставимо на "землю"
+    velocity_y = 0        
+    is_jumping = False     # можемо стрибати ще раз
+</pre
+            >
+          </div>
+        </div>
+
+        <!-- РУХ ВОРОГА -->
+        <div class="theory-block">
+          <h3 id="move-enemy">Рух ворога (туди-сюди): патрулюючий ворог</h3>
+
+          <p>Простий рух ворога по осі X:</p>
+
+          <div class="code">
+            <pre>
+enemy_rect.x += enemy_speed
+
+if enemy_rect.left < 100 or enemy_rect.right > 400 :
+    enemy_speed *= -1
+</pre
+            >
+          </div>
+
+          <p>Ворог рухається між двома межами і змінює напрямок.</p>
+          <p>
+            enemy_speed - швидкість ворога, потрібно задати перед циклом (де
+            завантажуєш зображення ворога)
+          </p>
+        </div>
+
+        <!-- КЛАВІАТУРА -->
+        <div class="theory-block">
+          <h3 id="event">Одноразове натискання клавіші (event)</h3>
+
+          <div class="code">
+            <pre>
+if event.type == pygame.KEYDOWN:
+    if event.key == pygame.K_a:
+        print("Натиснули A")
+</pre
+            >
+          </div>
+
+          <p>Одноразові події, які не постіно повторюються</p>
+
+          <p>
+            📌 Приклади:
+            <br />перезавантаження гри <br />відкриття меню <br />вибір предмета
+            / кнопки <br />взаємодія з об’єктом (відкрити двері, взяти предмет)
+            <br />атака або постріл
+          </p>
+        </div>
+
+        <!-- МИША -->
+        <div class="theory-block">
+          <h3 id="mouse">Миша</h3>
+
+          <p><b>1. Через події (event)</b></p>
+
+          <div class="code">
+            <pre>
+if event.type == pygame.MOUSEBUTTONDOWN:
+    print("Клік!")
+</pre
+            >
+          </div>
+
+          <p>
+            Використовується для фіксації
+            <b>моменту натискання (один клік)</b>.<br />
+            Наприклад: меню, вибір об’єкта, постріл.
+          </p>
+
+          <p><b>Кнопки миші:</b></p>
+
+          <p>
+            <b>1</b> — ліва кнопка<br />
+            <b>2</b> — середня<br />
+            <b>3</b> — права
+          </p>
+
+          <div class="code">
+            <pre>
+if event.type == pygame.MOUSEBUTTONDOWN:
+    if event.button == 1:
+        print("Ліва кнопка")
+</pre
+            >
+          </div>
+          <br />
+
+          <p><b>2. Затискання кнопки</b></p>
+
+          <div class="code">
+            <pre>
+if pygame.mouse.get_pressed()[0]:
+    print("Ліва кнопка натиснута")
+</pre
+            >
+          </div>
+
+          <p>
+            Використовується для <b>тривалої дії</b>: стрільба, утримання,
+            перетягування.
+          </p>
+
+          <p>
+            <b>[0]</b> — ліва<br />
+            <b>[1]</b> — середня<br />
+            <b>[2]</b> — права
+          </p>
+
+          <br />
+
+          <p><b>3. Позиція миші (одноразово, тут і зараз)</b></p>
+
+          <div class="code">
+            <pre>
+pos = pygame.mouse.get_pos()
+print(pos)
+</pre
+            >
+          </div>
+
+          <p>
+            одноразове зчитування позиції миші “тут і зараз” ти просто отримуєш
+            координати (x, y) у будь-який момент<br />
+            Використовується для наведення та вибору об’єктів.
+          </p>
+
+          <br />
+
+          <p><b>4. Подія руху миші (перетягування / drag)</b></p>
+
+          <div class="code">
+            <pre>
+if event.type == pygame.MOUSEMOTION:
+    print(event.pos)
+</pre
+            >
+          </div>
+
+          <p><b>event.pos</b> — позиція миші під час руху.</p>
+
+          <p><b>Приклад перетягування об’єкта:</b></p>
+
+          <div class="code">
+            <pre>
+dragging = False # чи тягнемо об'єкт
+
+  # Клік (схопили об’єкт)
+if event.type == pygame.MOUSEBUTTONDOWN:
+    if event.button == 1:
+        if player_rect.collidepoint(event.pos):
+            dragging = True
+
+#Рух миші (тягнемо)
+if event.type == pygame.MOUSEMOTION:
+    if dragging:
+        player_rect.center = event.pos
+
+#Відпустили кнопку
+if event.type == pygame.MOUSEBUTTONUP:
+    if event.button == 1:
+        dragging = False
+</pre
+            >
+          </div>
+
+          <p>Об’єкт “прилипає” до миші і рухається разом з нею.</p>
+        </div>
+
+        <!-- ВЗАЄМОДІЯ З ОБ’ЄКТАМИ -->
+        <div class="theory-block">
+          <h3 id="click">Клік по об’єкту</h3>
+
+          <div class="code">
+            <pre>
+if event.type == pygame.MOUSEBUTTONDOWN:
+    if player_rect.collidepoint(event.pos):
+        print("Клік по гравцю")
+</pre
+            >
+          </div>
+
+          <p><b>Де використовується:</b></p>
+
+          <p>
+            • клік по персонажу<br />
+            • вибір предметів<br />
+            • кнопки в грі<br />
+            • інвентар<br />
+            • інтерактивні об’єкти (двері, сундуки, меню)
+          </p>
+        </div>
+
+        <!-- ТАЙМЕР -->
+        <div class="theory-block">
+          <h3 id="timer">Таймер у грі</h3>
+
+          <p><b>1. Запуск таймера (поза циклом)</b></p>
+
+          <div class="code">
+            <pre>
+start_time = pygame.time.get_ticks()
+</pre
+            >
+          </div>
+
+          <p>Запам’ятовує час старту гри в мілісекундах.</p>
+
+          <br />
+
+          <p><b>2. Розрахунок часу (в циклі гри)</b></p>
+
+          <div class="code">
+            <pre>
+current_time = pygame.time.get_ticks()
+seconds = (current_time - start_time) // 1000
+</pre
+            >
+          </div>
+
+          <p>Показує, скільки секунд пройшло з початку гри.</p>
+        </div>
+
+        <!-- ПОСТРІЛ -->
+        <div class="theory-block">
+          <h3 id="shot">Постріл (через клавішу)</h3>
+
+          <p><b>Кожне натискання створює нову кулю</b></p>
+
+          <div class="code">
+            <pre>
+if event.type == pygame.KEYDOWN:
+    if event.key == pygame.K_SPACE:
+        bullets.append(bullet_rect.copy())
+</pre
+            >
+          </div>
+
+          <p><b> Рух куль у циклі</b></p>
+
+          <div class="code">
+            <pre>
+for bullet in bullets:
+    bullet.x += 10
+</pre
+            >
+          </div>
+
+          <p><b>3. Видалення куль (якщо виходять за екран)</b></p>
+
+          <div class="code">
+            <pre>
+for bullet in bullets[:]:
+    if bullet.x < 0 or bullet.x > 800:
+        bullets.remove(bullet)
+</pre
+            >
+          </div>
+
+          <p>
+            <b>bullets[:]</b> — це копія списку.<br />
+            Вона використовується, щоб не пропустити елементи під час циклу.
+            Оскільки з оригінального списку деякі кулі вже можуть бути видалені,
+            то номерація збивається.
+          </p>
+        </div>
+      </div>
+      <!----------------------------------------------- THEORY ------------------------------------------------------------------->
+      <div class="tab-content" id="theory">
+        <!-- ЗАГАЛЬНА ТЕОРІЯ -->
+        <!-- НАВІГАЦІЯ -->
+        <div class="pygame-quick-nav">
+          <a class="quick-btn" href="#print-if">Вивід / Ввід / if-else</a>
+          <a class="quick-btn" href="#lists">Списки</a>
+          <a class="quick-btn" href="#dicts">Словники</a>
+          <a class="quick-btn" href="#fstring">Функції / f-рядок</a>
+          <a class="quick-btn" href="#classes">Класи</a>
+          <a class="quick-btn" href="#os">OS модуль</a>
+          <a class="quick-btn" href="#file-modes">Режими файлів</a>
+          <a class="quick-btn" href="#tkinter">Tkinter</a>
+          <a class="quick-btn" href="#errors">Try / Except</a>
+        </div>
+
+        <!-- 1 -->
+        <div class="theory-block" id="print-if">
+          <h3>Вивід / Ввід / Умова if else</h3>
+          <a href="img/1_print_if.png" target="_blank">
+            <img src="img/1_print_if.png" width="50%" />
+          </a>
+        </div>
+
+        <!-- 2 -->
+        <div class="theory-block" id="lists">
+          <h3>Списки</h3>
+          <a href="img/2_списки.png" target="_blank">
+            <img src="img/2_списки.png" width="60%" />
+          </a>
+        </div>
+
+        <!-- 3 -->
+        <div class="theory-block" id="dicts">
+          <h3>Словники</h3>
+          <a href="img/3_словники.png" target="_blank">
+            <img src="img/3_словники.png" width="100%" />
+          </a>
+        </div>
+
+        <!-- 4 -->
+        <div class="theory-block" id="fstring">
+          <h3>Функції та f-рядки</h3>
+          <a href="img/4_функції_f-рядок.png" target="_blank">
+            <img src="img/4_функції_f-рядок.png" width="60%" />
+          </a>
+        </div>
+
+        <!-- 5 -->
+        <div class="theory-block" id="classes">
+          <h3>Класи</h3>
+          <a href="img/5_класи.png" target="_blank">
+            <img src="img/5_класи.png" width="70%" />
+          </a>
+        </div>
+
+        <!-- 6 -->
+        <div class="theory-block" id="os">
+          <h3>OS модуль</h3>
+          <a href="img/6_os.png" target="_blank">
+            <img src="img/6_os.png" width="70%" />
+          </a>
+        </div>
+
+        <!-- 7 -->
+        <div class="theory-block" id="file-modes">
+          <h3>Режими файлів (w / a / r)</h3>
+          <a href="img/7_режими_w_a_r.png" target="_blank">
+            <img src="img/7_режими_w_a_r.png" width="100%" />
+          </a>
+        </div>
+
+        <!-- 8 -->
+        <div class="theory-block" id="tkinter">
+          <h3>Tkinter</h3>
+          <a href="img/8_tkinter.png" target="_blank">
+            <img src="img/8_tkinter.png" width="70%" />
+          </a>
+        </div>
+
+        <!-- 9 -->
+        <div class="theory-block" id="errors">
+          <h3>Обробка помилок (try / except)</h3>
+          <a href="img/9_обробка_помилок_try_expect.png" target="_blank">
+            <img src="img/9_обробка_помилок_try_expect.png" width="70%" />
+          </a>
+        </div>
+      </div>
+      <!-------------------------------------------------------- FLASK --------------------------------------------->
+      <div class="tab-content" id="flask">
+
+  <!-- ШВИДКА НАВІГАЦІЯ -->
+  <div class="flask-quick-nav">
+    <a class="quick-btn-flask" href="#flask-intro">Flask</a>
+    <a class="quick-btn-flask" href="#routes">Routes</a>
+    <a class="quick-btn-flask" href="#sqlalchemy">SQLAlchemy</a>
+    <!-- <a class="quick-btn-flask" href="#forms">Форми</a> -->
+    <a class="quick-btn-flask" href="#session">Session</a>
+    <!-- <a class="quick-btn-flask" href="#query">Запити</a> -->
+     <a class="quick-btn-flask" href="#for">for у шаблоні</a>
+     <a class="quick-btn-flask" href="#if">if у шаблоні</a>
+  </div>
+
+  <!-- FLASK -->
+  <div class="theory-block-flask">
+    <h3 id="flask-intro">Flask — основа</h3>
+    <p>Створення простого сервера:</p>
+
+    <div class="code-flask">
+<pre>
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "Hello Flask!"
+
+if __name__ == "__main__":
+    app.run(debug=True)
+</pre>
+    </div>
+  </div>
+
+  <!-- ROUTES -->
+  <div class="theory-block-flask">
+    <h3 id="routes">Routes</h3>
+
+    <div class="code-flask">
+<pre>
+@app.route("/about")
+def about():
+    return render_template("about.html")
+</pre>
+    </div>
+      <p>
+    Файл <b>about.html</b> лежить у папці <b>templates</b>
+  </p>
+  </div>
+
+  <!-- SQLALCHEMY -->
+  <div class="theory-block-flask">
+    <h3 id="sqlalchemy">SQLAlchemy модель</h3>
+
+    <div class="code-flask">
+<pre>
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+</pre>
+    </div>
+     <p><b>primary_key=True</b> — це унікальний ідентифікатор запису (ID)</p>
+
+  <p><b>nullable=False</b> — поле ОБОВ’ЯЗКОВЕ (не може бути пустим)</p>
+</div>
+<div class="theory-block-flask">
+  <h3>Отримати всі дані з таблиці</h3>
+
+  <div class="code-flask">
+<pre>
+users = User.query.all()
+</pre>
+  </div>
+</div>
+
+<div class="theory-block-flask">
+  <h3>Отримати запис по ID</h3>
+
+  <div class="code-flask">
+<pre>
+user = User.query.get(1)
+</pre>
+  </div>
+
+  <p>1 — це id користувача</p>
+</div>
+
+  <div class="theory-block-flask">
+  <h3 id="session">Session (збереження даних користувача)</h3>
+
+  <p>Session зберігає дані між сторінками</p>
+
+  <div class="code-flask">
+<pre>
+from flask import session
+
+session["name"] = "Руслана"
+</pre>
+  </div>
+
+  <div class="code-flask">
+<pre>
+name = session.get("name")
+</pre>
+  </div>
+
+  <div class="code-flask">
+<pre>
+session.clear()
+</pre>
+  </div>
+
+  <p>
+    <b>session["name"]</b> — записує дані<br>
+    <b>session.get()</b> — безпечне отримання<br>
+    <b>session.clear()</b> — очищення
+  </p>
+</div>
+
+<div class="theory-block-flask">
+  <h3 id="for">FOR у шаблоні</h3>
+
+  <div class="code-flask">
+<pre>
+&lt;ul&gt;
+  &#123;&#37; for student in students &#37;&#125;
+    &lt;li&gt;&#123;&#123; student.name &#125;&#125; — &#123;&#123; student.score &#125;&#125;&lt;/li&gt;
+  &#123;&#37; endfor &#37;&#125;
+&lt;/ul&gt;
+</pre>
+  </div>
+
+  <p>
+    Тут <b>student</b> — це об’єкт (словник)<br>
+    доступ через <b>student.name</b>, <b>student.score</b>
+  </p>
+</div>
+<div class="theory-block-flask">
+  <h3 id="if">IF / ELSE у шаблоні</h3>
+
+  <div class="code-flask">
+<pre>
+&#123;&#37; if student.score >= 60 &#37;&#125;
+  &lt;p style="color:green;"&gt;Здано&lt;/p&gt;
+&#123;&#37; else &#37;&#125;
+  &lt;p style="color:red;"&gt;Не здано&lt;/p&gt;
+&#123;&#37; endif &#37;&#125;
+</pre>
+  </div>
+</div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
