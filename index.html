@@ -11,14 +11,112 @@
     <div class="container">
       <div class="tabs">
         <button class="tab-btn active" data-tab="pygame">Pygame</button>
+		<button class="tab-btn" data-tab="field">Pygame ігри на матриці</button>
         <button class="tab-btn" data-tab="theory">Загальна теорія</button>
         <button class="tab-btn" data-tab="flask">Flask</button>
       </div>
+	  <div class="tab-content" id="field">
+	  <div class="theory-block">
+  <h3>Ігри на матриці / поле</h3>
 
+  <p>
+    У таких іграх поле зберігається у вигляді списку списків (матриці).
+    Кожне число означає різний об’єкт:
+  </p>
+
+  <div class="code">
+  <a href="img/board.png" target="_blank">
+  <img src="img/board.png" class="board">
+  </a>
+    <pre>
+board = [
+    [0, 0, 0, 1, 0],
+    [0, 1, 0, 0, 0],
+    [0, 0, 0, 2, 0],
+]
+</pre>
+  </div>
+
+  <p>
+    <b>0</b> — порожньо<br />
+    <b>1</b> — стіна<br />
+    <b>2</b> — монетка
+  </p>
+
+  <p>Розмір однієї клітинки:</p>
+
+  <div class="code">
+    <pre>SIZE = 100</pre>
+  </div>
+
+  <p>Перебір усього поля:</p>
+
+  <div class="code">
+<pre>
+for r in range(3):  # r — номер рядка
+    for c in range(5):  # c — номер колонки
+
+        # Отримання числа з матриці
+        number = board[r][c]
+
+        # Позиція клітинки на екрані
+        x = c * SIZE
+        y = r * SIZE
+
+        # Відмалювання різних картинок
+        if number == 1:
+            screen.blit(img1, (x, y))
+
+        if number == 2:
+            screen.blit(img2, (x, y))
+</pre>
+  </div>
+      <p>Так роблять:</p>
+  <ul>
+    <li>Лабіринти</li>
+    <li>Платформери</li>
+    <li>Тетріс</li>
+    <li>2048</li>
+    <li>Bomberman</li>
+    <li>RPG карти</li>
+    <li>Ігри з тайлами</li>
+  </ul>
+  </div>
+  
+<div class="theory-block">
+  <h3 id="wall-collision">Колізії зі стінами без rect (через матрицю)</h3>
+
+  <p>Початкова позиція гравця (перед циклом):</p>
+
+  <div class="code">
+    <pre>
+player_x = 0
+player_y = 0
+</pre>
+  </div>
+
+  <p>Рух вправо та перевірка стіни (в циклі):</p>
+
+  <div class="code">
+    <pre>
+# рух вправо
+new_x = player_x + 1
+
+# якщо справа НЕ стіна (клітинка не рівна 1)
+if board[player_y][new_x] != 1:
+
+    # гравець може рухатись
+    player_x = new_x
+</pre>
+  </div>
+
+</div>
+  </div>
       <!-- PYGAME -->
       <div class="tab-content active" id="pygame">
         <!-- РОЗКЛАД (ШВИДКА НАВІГАЦІЯ) -->
         <div class="pygame-quick-nav">
+		  <a class="quick-btn" href="#random">Random</a>
           <a class="quick-btn" href="#rect">Прямокутник</a>
           <a class="quick-btn" href="#circle">Коло</a>
           <a class="quick-btn" href="#line">Лінія</a>
@@ -38,6 +136,28 @@
           <a class="quick-btn" href="#timer">Таймер у грі</a>
           <a class="quick-btn" href="#shot">Постріл (через клавішу)</a>
         </div>
+		<!-- RANDOM -->
+        <div class="theory-block">
+  <h3 id="random">Random</h3>
+
+  <p>Випадкове ціле число:</p>
+  <div class="code">
+    <pre>
+x = random.randint(1, 10)</pre>
+  </div>
+
+  <p>
+    <b>1</b> — мінімальне число<br />
+    <b>10</b> — максимальне число
+  </p>
+
+  <p>Випадковий елемент зі списку:</p>
+  <div class="code">
+    <pre>
+fruits = ["яблуко", "банан", "груша"]
+fruit = random.choice(fruits)</pre>
+  </div>
+</div>
         <!-- ПРЯМОКУТНИК -->
         <div class="theory-block">
           <h3 id="rect">Прямокутник</h3>
@@ -47,7 +167,9 @@
           </div>
           <p>Відмалювання у циклі:</p>
           <div class="code">
-            <pre>pygame.draw.rect(screen, (255, 0, 0), rect)</pre>
+            <pre>pygame.draw.rect(screen, (255, 0, 0), rect)        # сам прямокутник
+pygame.draw.rect(screen, (50, 50, 50), rect, 2)       # або рамка шириною 2
+</pre>
           </div>
           <p>
             <b>100</b> — позиція по X<br />
@@ -276,8 +398,8 @@ if keys[pygame.K_RIGHT]:
           <div class="code">
             <pre>
 gravity = 1 
-jump_speed = -15
-velocity_y = 0
+jump_speed = -15 # має бути від'ємне значення (рух угору)
+velocity_y = 0  # залишаємо 0
 is_jumping = False
 </pre
             >
