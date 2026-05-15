@@ -16,8 +16,21 @@
         <button class="tab-btn" data-tab="flask">Flask</button>
       </div>
 	  <div class="tab-content" id="field">
+	  <div class="pygame-quick-nav">
+		  <a class="quick-btn" href="#matrix-game">Ігри на полі</a>
+          <a class="quick-btn" href="#matrix-img">Зображення</a>
+          <a class="quick-btn" href="#matrix-field">Малюємо поле</a>
+		  <a class="quick-btn" href="#matrix-draw">Малюємо гравця та ворогів</a>
+          <a class="quick-btn" href="#matrix-move">Рух гравця</a>
+          <a class="quick-btn" href="#matrix-enemy">Патрулюючий ворог</a>
+		  <a class="quick-btn" href="#matrix-coin">Збирання монет</a>
+		  <a class="quick-btn" href="#matrix-collision">Зіткнення з ворогом</a>
+		<a class="quick-btn" href="#matrix-enemy-shot">Постріл патрулюючого ворога</a>
+		
+		</div>
 	  <div class="theory-block">
-  <h3>Ігри на матриці / поле</h3>
+  <h3 id="matrix-game">Ігри на матриці / поле</h3>
+  
 
   <p>
     У таких іграх поле зберігається у вигляді списку списків (матриці).
@@ -34,22 +47,96 @@ board = [
     [0, 1, 0, 0, 0],
     [0, 0, 0, 2, 0],
 ]
+
 </pre>
   </div>
 
   <p>
     <b>0</b> — порожньо<br />
     <b>1</b> — стіна<br />
-    <b>2</b> — монетка
+    <b>2</b> — монетка<br />
+	<b>3</b> — гравець<br />
+    <b>4</b> — ворог
+  </p>
+  
+<p>
+  Ми рухаємось по координатах сітки, а не по пікселях.
+</p>
+
+<p><b>Доступ до клітинки в матриці:</b></p>
+
+<div class="code">
+<pre>
+board[y][x] або board[r][c]
+</pre>
+</div>
+
+<p>
+  <b>де:</b><br>
+  y = r — номер рядка (вниз по карті)<br>
+  x = c — номер стовпчика (вправо по карті)
+</p>
+
+<p><b>Приклад:</b></p>
+
+<div class="code">
+<pre>
+board[2][3] = 2
+</pre>
+</div>
+
+<p>
+  <b>це означає:</b><br>
+  • 2-й рядок<br>
+  • 3-й стовпчик<br>
+  • у цій клітинці знаходиться монетка (2)
+</p>
+  
+</div>
+
+
+
+
+<div class="theory-block">
+  
+  <h3 id="matrix-img">1. Завантаження зображень (перед циклом)</h3>
+  
+  <p><b>Тут НЕ потрібен rect</b></p>
+  <p>
+	Rect потрібен для фізики в пікселях.
+    А ми працюємо не з пікселями, а з клітинками (тайлами).</p>
+  <p>Тому координати — це <b>r (row - рядок), c (column - колонка) </b>, а рух — це +1 / -1 по матриці.
   </p>
 
-  <p>Розмір однієї клітинки:</p>
-
   <div class="code">
-    <pre>SIZE = 100</pre>
-  </div>
+<pre>
+# розмір однієї клітинки (встановлюєш сам)
+SIZE = 100
 
-  <p>Перебір усього поля:</p>
+# завантаження зображень (без rect)
+wall_img = pygame.image.load("wall.png")
+coin_img = pygame.image.load("coin.png")
+player_img = pygame.image.load("player.png")
+enemy_img = pygame.image.load("enemy.png")
+
+#додактово: щоб змінити розмір зображення
+player_img = pygame.transform.smoothscale(player_img, (SIZE, SIZE))
+
+# початкові позиції (в яких клітинках розташовані)
+# гравець
+player_x = 0 #номер колонки (с)
+player_y = 0 #номер рядка (r)
+
+# патрулюючий ворог
+enemy_x = 3
+enemy_y = 1
+enemy_dir = 1 # напрямок руху ворога: або 1, або -1
+</pre>
+  </div>
+  </div>
+  
+  <div class="theory-block">
+  <h3 id="matrix-field">2. Малюємо все поле (в циклі):</h3>
 
   <div class="code">
 <pre>
@@ -63,14 +150,215 @@ for r in range(3):  # r — номер рядка
         x = c * SIZE
         y = r * SIZE
 
-        # Відмалювання різних картинок
-        if number == 1:
-            screen.blit(img1, (x, y))
+	# Відмалювання різних картинок (статичних об'єктів)
+	# гравця та ворогів, якщо вони рухаються - не малюємо
+        if board[r][c] == 0: # порожня кілтинки
+            pygame.draw.rect(screen, (255, 255, 255), (x, y, SIZE, SIZE))
 
-        if number == 2:
-            screen.blit(img2, (x, y))
+        if board[r][c] == 1:
+            screen.blit(wall_img, (x, y))
+
+        if board[r][c] == 2:
+            screen.blit(coin_img, (x, y))
+
 </pre>
   </div>
+  </div>
+  
+  <div class="theory-block">
+   <h3 id="matrix-draw">3. Малюємо гравця та ворогів</h3>
+
+<div class="code">
+<pre>
+screen.blit(player_img, (player_x * SIZE, player_y * SIZE))
+
+screen.blit(enemy_img, (enemy_x * SIZE, enemy_y * SIZE))
+</pre>
+</div>
+ </div>
+  
+  
+  <div class="theory-block">
+  
+   <h3 id="matrix-move">4. Рух гравця (робимо через event.type) </h3>
+
+  <div class="code">
+<pre>
+if event.type == pygame.KEYDOWN:
+
+    if event.key == pygame.K_RIGHT:
+	# рух вправо
+	new_x = player_x + 1
+
+	# якщо справа НЕ стіна (клітинка не рівна 1)
+	if board[player_y][new_x] != 1:
+
+		# гравець може рухатись
+		player_x = new_x
+
+	# інші напрямки робляться аналогічно
+</pre>
+  </div>
+</div>
+<div class="theory-block">
+  <h3 id="matrix-enemy">4. Рух ворога у стилі патруля</h3>
+
+  <div class="code">
+<pre>
+# пробуємо зробити крок вправо або вліво (залежно від enemy_dir)
+# enemy_dir - напрямок ворога: або 1, або -1
+new_x = enemy_x + enemy_dir
+
+# перевіряємо клітинку попереду
+# перевірка меж екрану (клітинок від 0 до 4) і якщо там НЕ стіна (1) — можна рухатись
+if 0 <= new_x <= 4 and board[enemy_y][new_x] != 1:
+
+    # оновлюємо позицію ворога
+    enemy_x = new_x
+
+else:
+    # якщо попереду стіна або межа екрану
+    # змінюємо напрям руху (розвертаємо ворога)
+    enemy_dir *= -1
+</pre>
+  </div>
+</div>
+<div class="theory-block">
+  <h3 id="matrix-coin">Збирання монет</h3>
+
+  <div class="code">
+<pre>
+# перевірка: чи стоїть гравець на монетці
+if board[player_y][player_x] == 2:
+
+    # забираємо монетку (робимо клітинку порожньою)
+    board[player_y][player_x] = 0
+
+</pre>
+  </div>
+</div>  
+
+<div class="theory-block">
+  <h3 id="matrix-collision">Зіткнення з ворогом</h3>
+
+  <div class="code">
+<pre>
+# якщо координати гравця і ворога однакові — це зіткнення
+if player_x == enemy_x and player_y == enemy_y:
+
+    # гра закінчується
+    print("Game Over")
+</pre>
+  </div>
+
+</div>
+
+<!-- ПОСТРІЛ ПАТРУЛЮЮЧОГО ВОРОГА -->
+<div class="theory-block">
+  <h3 id="matrix-enemy-shot">Постріл патрулюючого ворога</h3>
+
+  <p><b>1. Додаємо час пострілу та список куль (перед циклом)</b></p>
+
+  <div class="code">
+<pre>
+# список куль ворога
+enemy_bullets = []
+
+# час пострілу ворога
+enemy_shoot_time = 0
+
+# швидкість кулі ворога
+bullet_move_time = 0
+</pre>
+  </div>
+
+  <p><b>2. Вороже стріляння (у циклі)</b></p>
+
+  <div class="code">
+<pre>
+current_time = pygame.time.get_ticks()
+
+# кожні 2 секунди ворог стріляє
+if current_time - enemy_shoot_time > 2000:
+
+    # створюємо кулю з позиції ворога
+	# enemy_dir - це напрям руху ворога (1 або -1)
+    bullet = [enemy_x, enemy_y, enemy_dir]
+
+    # додаємо в список
+    enemy_bullets.append(bullet)
+
+    # оновлюємо час
+    enemy_shoot_time = current_time
+</pre>
+  </div>
+
+  <p><b>3. Рух куль ворога</b></p>
+
+  <div class="code">
+<pre>
+# кожні 200ms куля робить крок на 1 клітинку
+if current_time - bullet_move_time > 200:
+
+    # рухаємо всі кулі ворога
+    for bullet in enemy_bullets:
+        bullet[0] += bullet[2]
+
+    # оновлюємо час руху
+    bullet_move_time = current_time
+</pre>
+  </div>
+
+  <p><b>4. Зіткнення кулі з гравцем</b></p>
+
+  <div class="code">
+<pre>
+# проходимо по копії списку куль (щоб можна було видаляти елементи)
+for bullet in enemy_bullets[:]:
+
+    # Якщо координати кулі і гравця співпадають — це попадання
+    if bullet[0] == player_x and bullet[1] == player_y:
+
+        print("Гравець влучений!")
+
+        # видаляємо кулю після попадання
+        enemy_bullets.remove(bullet)
+</pre>
+  </div>
+
+  <p><b>5. Видалення куль за межами карти</b></p>
+
+  <div class="code">
+<pre>
+# проходимо по копії списку куль
+for bullet in enemy_bullets[:]:
+
+    # перевіряємо: чи куля вийшла за межі карти (по X)
+    if bullet[0] < 0 or bullet[0] >= 4:
+
+        # видаляємо кулю, якщо вона за екраном
+        enemy_bullets.remove(bullet)
+</pre>
+  </div>
+  
+  <p><b>6. Малювання куль</b></p>
+
+<div class="code">
+<pre>
+# перед циклом завантажуємо зображення кулі (пункт Зображення)
+# малюємо всі кулі ворога (в циклі)
+for bullet in enemy_bullets:
+
+    # переводимо координати клітинки в пікселі
+    x = bullet[0] * SIZE
+    y = bullet[1] * SIZE
+
+    # відображаємо кулю на екрані
+    screen.blit(bullet_img, (x, y))
+</pre>
+</div>
+</div>
+  
       <p>Так роблять:</p>
   <ul>
     <li>Лабіринти</li>
@@ -82,36 +370,7 @@ for r in range(3):  # r — номер рядка
     <li>Ігри з тайлами</li>
   </ul>
   </div>
-  
-<div class="theory-block">
-  <h3 id="wall-collision">Колізії зі стінами без rect (через матрицю)</h3>
-
-  <p>Початкова позиція гравця (перед циклом):</p>
-
-  <div class="code">
-    <pre>
-player_x = 0
-player_y = 0
-</pre>
-  </div>
-
-  <p>Рух вправо та перевірка стіни (в циклі):</p>
-
-  <div class="code">
-    <pre>
-# рух вправо
-new_x = player_x + 1
-
-# якщо справа НЕ стіна (клітинка не рівна 1)
-if board[player_y][new_x] != 1:
-
-    # гравець може рухатись
-    player_x = new_x
-</pre>
-  </div>
-
-</div>
-  </div>
+ 
       <!-- PYGAME -->
       <div class="tab-content active" id="pygame">
         <!-- РОЗКЛАД (ШВИДКА НАВІГАЦІЯ) -->
@@ -122,7 +381,6 @@ if board[player_y][new_x] != 1:
           <a class="quick-btn" href="#line">Лінія</a>
           <a class="quick-btn" href="#img">Зображення</a>
           <a class="quick-btn" href="#bg">Фон (картинка на фон)</a>
-          <a class="quick-btn" href="#collision">Зіткнення (collision)</a>
           <a class="quick-btn" href="#text">Текст</a>
           <a class="quick-btn" href="#key">Клавіатура</a>
           <a class="quick-btn" href="#move">Рух гравця (клавіатура)</a>
@@ -135,6 +393,8 @@ if board[player_y][new_x] != 1:
           <a class="quick-btn" href="#click">Клік по об’єкту</a>
           <a class="quick-btn" href="#timer">Таймер у грі</a>
           <a class="quick-btn" href="#shot">Постріл (через клавішу)</a>
+		  <a class="quick-btn" href="#spawn">Монети</a>
+		  <a class="quick-btn" href="#collision">Зіткнення (collision)</a>
         </div>
 		<!-- RANDOM -->
         <div class="theory-block">
@@ -292,20 +552,7 @@ screen.blit(background, (0, 0))
             <b>(0, 0)</b> — малюємо фон у верхньому лівому куті
           </p>
         </div>
-        <!-- ЗІТКНЕННЯ -->
-        <div class="theory-block">
-          <h3 id="collision">Зіткнення (collision)</h3>
-
-          <p>Перевірка зіткнення двох об’єктів:</p>
-
-          <div class="code">
-            <pre>
-if player_rect.colliderect(enemy_rect):
-    print("Зіткнення!")
-</pre
-            >
-          </div>
-        </div>
+       
 
         <!-- ТЕКСТ -->
         <div class="theory-block">
@@ -378,6 +625,10 @@ keys = pygame.key.get_pressed()
 
           <div class="code">
             <pre>
+# Отримання натиснутих клавіш
+# команда пишеться один раз на весь проєкт
+keys = pygame.key.get_pressed()
+
 if keys[pygame.K_LEFT]:
     player_rect.x -= 5
 
@@ -660,8 +911,27 @@ seconds = (current_time - start_time) // 1000
         <!-- ПОСТРІЛ -->
         <div class="theory-block">
           <h3 id="shot">Постріл (через клавішу)</h3>
+		  
+		  <p><b>1. Завантажуємо картинку кулі (перед циклом)</b></p>
 
-          <p><b>Кожне натискання створює нову кулю</b></p>
+          <div class="code">
+            <pre>
+# завантаження картинки
+bullet_img = pygame.image.load("bullet.png")
+
+#додактово: щоб змінити розмір зображення
+bullet_img = pygame.transform.smoothscale(bullet_img, (50, 50))
+
+# створення rect
+bullet_rect = bullet_img.get_rect()
+
+# стоврюємо список для всіх куль
+bullets = []
+</pre
+            >
+          </div>
+
+          <p><b>2. Кожне натискання створює нову кулю (в циклі)</b></p>
 
           <div class="code">
             <pre>
@@ -669,15 +939,19 @@ if event.type == pygame.KEYDOWN:
     if event.key == pygame.K_SPACE:
 		# створюємо копію прямокутника кулі
 		bullet = bullet_rect.copy()
-		
+
 		# тут вказуємо початкову позицію кулі
+		# наприклад, куля біля гравця:
+		bullet.x = player.x + 80
+		bullet.y = player.y + 30
 		
+		# додаємо створену кулю до списку всіх куль
 		bullets.append(bullet)
 </pre
             >
           </div>
 
-          <p><b> Рух куль у циклі</b></p>
+          <p><b>3. Рух куль у циклі</b></p>
 
           <div class="code">
             <pre>
@@ -687,12 +961,12 @@ for bullet in bullets:
             >
           </div>
 
-          <p><b>3. Видалення куль (якщо виходять за екран)</b></p>
+          <p><b>4. Видалення куль (якщо виходять за екран)</b></p>
 
           <div class="code">
             <pre>
 for bullet in bullets[:]:
-    if bullet.x < 0 or bullet.x > 800:
+    if bullet.x < 0 or bullet.x > 1000:
         bullets.remove(bullet)
 </pre
             >
@@ -704,8 +978,159 @@ for bullet in bullets[:]:
             Оскільки з оригінального списку деякі кулі вже можуть бути видалені,
             то номерація збивається.
           </p>
-        </div>
+		
+<p><b>5. Малюємо кулі </b></p>
+
+          <div class="code">
+            <pre>
+for bullet in bullets:
+    screen.blit(bullet_img, bullet)
+</pre
+            >
+          </div>
+		   </div>
+		  <!-- СПАВН ОБ'ЄКТІВ -->
+<div class="theory-block">
+  <h3 id="spawn">Створення монет, яких одночасно багато на екрані</h3>
+
+  <p><b>1. Завантажуємо картинку монети (перед циклом)</b></p>
+
+  <div class="code">
+    <pre>
+# завантаження картинки
+coin_img = pygame.image.load("coin.png")
+
+#додактово: щоб змінити розмір зображення
+coin_img = pygame.transform.smoothscale(coin_img, (100, 100))
+
+# створення rect
+coin_rect = coin_img.get_rect()
+
+# стоврюємо список для всіх монет
+coins = []
+
+# час останнього створення монети
+coin_time = 0
+</pre>
+  </div>
+
+  <p><b>2. Додаємо таймер (у циклі) </b></p>
+  <div class="code">
+            <pre>
+# цей рядок у тебе в грі вже має бути
+# це поточний час - один на всю гру
+current_time = pygame.time.get_ticks()
+</pre
+            >
+          </div>
+  
+
+  <p><b>3. Через певний час створюємо нову монету (у циклі)</b></p>
+
+  <div class="code">
+    <pre>
+# Створення монети кожні 3 сек
+if current_time - coin_time >= 3000:
+
+    # створюємо копію монети
+    coin = coin_rect.copy()
+
+    # випадкова позиція по X
+    coin.x = random.randint(0, 1000)
+
+    # початок зверху екрану
+    coin.y = -100
+
+    # додаємо у список монет
+    coins.append(coin)
+
+    # оновлюємо час
+    coin_time = current_time
+</pre>
+  </div>
+
+  <p><b>5. Рух монет вниз</b></p>
+
+  <div class="code">
+    <pre>
+for coin in coins:
+    coin.y += 5
+</pre>
+  </div>
+
+  <p><b>6. Видалення монет за екраном</b></p>
+
+  <div class="code">
+    <pre>
+for coin in coins[:]:
+    if coin.y > 600:
+        coins.remove(coin)
+</pre>
+  </div>
+
+  <p><b>7. Малюємо монети</b></p>
+
+  <div class="code">
+    <pre>
+for coin in coins:
+    screen.blit(coin_img, coin)
+</pre>
+
+
       </div>
+	  </div>
+	  
+	   <!-- ЗІТКНЕННЯ -->
+        <div class="theory-block">
+          <h3 id="collision">Зіткнення (collision)</h3>
+
+          <p>Варіант1:один гравець і один ворог:</p>
+
+          <div class="code">
+            <pre>
+if player_rect.colliderect(enemy_rect):
+    print("Зіткнення!")
+</pre
+            >
+          </div>
+		  
+		  <p>Варіант2: один гравець і багато монет </p>
+
+<div class="code">
+<pre>
+# монети зберігаються в списку coins = [ ]
+for coin in coins:
+
+    if player_rect.colliderect(coin):
+	# "збираємо" = видаляємо конкретну монету
+        coins.remove(coin)
+</pre>
+</div>
+
+<p>Варіант3: багато "добрих" куль і багато ворогів</p>
+
+<div class="code">
+<pre>
+# вороги зберігаються в списку enemies = [ ]
+# кулі гравця зберігаються в списку bullets = [ ]
+for bullet in bullets:
+
+    for enemy in enemies:
+
+        if bullet.colliderect(enemy):
+
+            bullets.remove(bullet)
+            enemies.remove(enemy)
+
+            print("Ворог знищений!")
+            break
+</pre>
+</div>
+
+
+
+        </div>
+		</div>
       <!----------------------------------------------- THEORY ------------------------------------------------------------------->
       <div class="tab-content" id="theory">
         <!-- ЗАГАЛЬНА ТЕОРІЯ -->
@@ -884,23 +1309,49 @@ user = User.query.get(1)
 </div>
 
   <div class="theory-block-flask">
-  <h3 id="session">Session (збереження даних користувача)</h3>
 
-  <p>Session зберігає дані між сторінками</p>
+  <h3 id="session">
+    Session (збереження даних користувача між сторінками)
+  </h3>
 
-  <div class="code-flask">
-<pre>
-from flask import session
-
-session["name"] = "Руслана"
-</pre>
-  </div>
+  <p>
+    Отримуємо дані з форми, які користувач ввів на HTML-сторінці:
+  </p>
 
   <div class="code-flask">
 <pre>
-name = session.get("name")
+&lt;input type="radio" name="login"&gt;
+
+login = request.form.get("login")
+# "login" — назва поля в HTML-формі
 </pre>
   </div>
+
+  <p>
+    Записуємо дані в сесію:
+  </p>
+
+  <div class="code-flask">
+<pre>
+session["login"] = "fox"
+# створюємо пару в сесії {"login" : "fox"}
+</pre>
+  </div>
+
+  <p>
+    Отримуємо дані із сесії:
+  </p>
+
+  <div class="code-flask">
+<pre>
+login = session.get("login")
+# "login" — назва ключа в session
+</pre>
+  </div>
+
+  <p>
+    Очищаємо сесію:
+  </p>
 
   <div class="code-flask">
 <pre>
@@ -908,13 +1359,7 @@ session.clear()
 </pre>
   </div>
 
-  <p>
-    <b>session["name"]</b> — записує дані<br>
-    <b>session.get()</b> — безпечне отримання<br>
-    <b>session.clear()</b> — очищення
-  </p>
 </div>
-
 <div class="theory-block-flask">
   <h3 id="for">FOR у шаблоні</h3>
 
